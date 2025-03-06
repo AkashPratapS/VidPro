@@ -6,6 +6,8 @@ import Search from "./components/Search";
 import PlayingVideo from "./components/PlayingVideo";
 import { useAuth } from "./context/AuthProvider";
 import Loading from "./loader/Loading";
+import SignUpPage from "./pages/SignUpPage";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
   const { loading } = useAuth();
@@ -14,6 +16,8 @@ function App() {
       {loading && <Loading />}
       <Navbar />
       <Routes>
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/" exact element={<Home />} />
         <Route path="/search/:searchQuery" element={<Search />} />
         <Route path="/video/:id" element={<PlayingVideo />} />
