@@ -10,11 +10,11 @@ export const signUpUser = async (email, password) => {
   return response.json();
 };
 
-export const loginUser = async (email, password) => {
-  const response = await fetch(`${API_BASE_URL}/login`, {
+export const loginUser = async (credentials) => {
+  const response = await fetch(`${API_BASE_URL}/api/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify(credentials),
   });
 
   const data = await response.json();
