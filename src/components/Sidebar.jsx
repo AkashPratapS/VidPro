@@ -81,13 +81,15 @@ function Sidebar() {
             <div key={index} className="mb-5">
               <h1 className="font-bold text-lg text-gray-700">{group.groupName}</h1>
               {group.groupItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center space-x-5 px-3 py-2 w-full rounded-xl cursor-pointer hover:bg-gray-300 hover:shadow-md transition duration-300"
-                >
-                  <div className="text-2xl">{item.icon}</div>
-                  <span className="text-base w-full">{item.name}</span> {/* Ensures full word highlight */}
-                </div>
+             <div
+             key={item.id}
+             className="flex items-center gap-4 px-4 py-2 w-full rounded-xl cursor-pointer hover:bg-gray-300 hover:shadow-md transition duration-300"
+           >
+             <div className="w-8 flex justify-center text-2xl">{item.icon}</div>
+             <div className="flex-grow text-base">{item.name}</div>
+           </div>
+           
+            
               ))}
             </div>
           ))}
