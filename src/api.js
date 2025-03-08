@@ -38,3 +38,6 @@ export const getProfile = async () => {
 export const logoutUser = () => {
   localStorage.removeItem("token");
 };
+
+// ✅ Add this to allow default import
+export default { signUpUser, loginUser, getProfile, logoutUser };

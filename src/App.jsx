@@ -11,11 +11,12 @@ import LoginPage from "./pages/LoginPage";
 
 function App() {
   const { loading } = useAuth();
+
   return (
     <div>
       {loading && <Loading />}
       <Navbar />
-      <Routes>
+      <Routes> {/* ✅ No extra BrowserRouter */}
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" exact element={<Home />} />
