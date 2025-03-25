@@ -71,39 +71,34 @@ function Sidebar() {
       <div
         className={`${
           mobileShow
-            ? "fixed top-0 bottom-0 left-0 transition-all duration-300 bg-white z-40 h-screen w-[80%] sm:w-[50%]" // Wider Mobile Sidebar
-            : "hidden h-[calc(100vh-6.625rem)] w-[25%]" // Wider Desktop Sidebar
-        } xl:static xl:block px-5 lg:px-7 overflow-y-scroll overflow-x-hidden scrollbar-thin shadow-lg`}
+            ? "fixed top-0 bottom-0 left-0 w-[75%] sm:w-[50%] bg-white z-40 h-screen transition-all duration-300 ease-in-out shadow-lg pt-16"
+            : "hidden" 
+        } xl:static xl:block xl:w-[250px] bg-white h-screen px-5 py-4 overflow-y-auto scrollbar-thin`}
       >
         {/* Sidebar Content */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           {sidebarItems.map((group, index) => (
             <div key={index} className="mb-5">
-              <h1 className="font-bold text-lg text-gray-700">{group.groupName}</h1>
+              <h1 className="font-bold text-gray-700 text-lg">{group.groupName}</h1>
               {group.groupItems.map((item) => (
-             <div
-             key={item.id}
-             className="flex items-center gap-4 px-4 py-2 w-full rounded-xl cursor-pointer hover:bg-gray-300 hover:shadow-md transition duration-300"
-           >
-             <div className="w-8 flex justify-center text-2xl">{item.icon}</div>
-             <div className="flex-grow text-base">{item.name}</div>
-           </div>
-           
-            
+                <div
+                  key={item.id}
+                  className="flex items-center gap-4 px-4 py-3 w-full rounded-lg cursor-pointer hover:bg-gray-200 hover:shadow-md transition-all duration-200"
+                >
+                  <div className="w-8 flex justify-center text-2xl">{item.icon}</div>
+                  <div className="flex-grow text-base text-gray-800">{item.name}</div>
+                </div>
               ))}
             </div>
           ))}
         </div>
 
         {/* Footer */}
-        <br />
-        <hr />
-        <br />
+        <hr className="my-4" />
         <span className="text-sm text-gray-600 font-semibold">
           About • Press • Copyright <br /> Contact us • Creators <br /> Advertise • Developers <br />
           <p className="mt-3">Terms • Privacy • Policy & Safety</p> How VidPro works <br /> Test new features
         </span>
-        <br />
         <p className="text-sm text-gray-500 mt-3">© 2024 VidPro</p>
       </div>
 

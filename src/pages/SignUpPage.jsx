@@ -19,15 +19,16 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Sign Up</h1>
+    <div className="flex justify-center items-center h-screen bg-gray-100 ">
+      <div className="bg-white p-6 rounded-lg shadow-md w-80">
+      <h1 className="text-2xl font-semibold mb-4 text-center">Sign Up</h1>
       <form onSubmit={handleSignUp}>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="block mb-2 p-2 border rounded"
+          className="w-full mb-2 p-2 border rounded"
           required
         />
         <input
@@ -35,13 +36,14 @@ const SignUpPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="block mb-2 p-2 border rounded"
+          className="w-full mb-2 p-2 border rounded"
           required
         />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
           Sign Up
         </button>
       </form>
+      </div>
     </div>
   );
 };

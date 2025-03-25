@@ -1,4 +1,5 @@
 import React from "react";
+import './index.css';
 import Navbar from "./components/Navbar";
 import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
@@ -19,7 +20,7 @@ function App() {
       <Routes> {/* ✅ No extra BrowserRouter */}
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/" exact element={<Home />} />
+        <Route path="/"  element={<Home />} />
         <Route path="/search/:searchQuery" element={<Search />} />
         <Route path="/video/:id" element={<PlayingVideo />} />
       </Routes>
