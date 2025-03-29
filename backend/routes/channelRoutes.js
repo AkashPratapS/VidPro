@@ -3,6 +3,16 @@ const Channel = require("../models/Channel");
 const Video = require("../models/Video");
 const router = express.Router();
 
+// ✅ Add a route to fetch all channels
+router.get("/", async (req, res) => {
+  try {
+    const channels = await Channel.find();
+    res.json(channels);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Create a Channel
 router.post("/create", async (req, res) => {
   try {

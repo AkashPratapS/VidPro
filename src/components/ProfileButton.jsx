@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getProfile, logoutUser } from "../api"; // Ensure API functions are implemented
+import { getProfile, logoutUser } from "../api";
 import { Link } from "react-router-dom";
 
 const ProfileButton = () => {
@@ -23,22 +23,34 @@ const ProfileButton = () => {
   };
 
   return (
-    <div>
+    <div className="flex items-center space-x-4">
       {user ? (
-        <>
-          <Link to="/profile" className="text-white p-2">
+        <div className="flex items-center space-x-3">
+          <Link to="/profile" className="text-gray-800 font-medium">
             Welcome, {user.email}
           </Link>
-          <button 
-            onClick={handleLogout} 
-            className="bg-red-500 text-white p-2 rounded ml-2">
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-4 py-2 rounded-full transition duration-300 hover:bg-red-600 shadow-md"
+          >
             Logout
           </button>
-        </>
+        </div>
       ) : (
-        <Link to="/signup" className="bg-blue-500 text-white p-2 rounded">
-          Sign Up
-        </Link>
+        <div className="flex items-center space-x-3">
+          <Link
+            to="/login"
+            className="px-4 py-2 text-white font-medium border bg-purple-600 border-purple-600 rounded-full transition duration-300 hover:bg-gray-200 shadow-md"
+          >
+            Login
+          </Link>
+          <Link
+            to="/signup"
+            className="px-4 py-2 bg-blue-500 text-white font-medium rounded-full transition duration-300 hover:bg-blue-600 shadow-md"
+          >
+            Sign Up
+          </Link>
+        </div>
       )}
     </div>
   );
