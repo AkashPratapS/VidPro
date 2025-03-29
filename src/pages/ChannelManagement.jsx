@@ -8,22 +8,28 @@ const ChannelManagement = () => {
   useEffect(() => {
     API.get("/channels")
       .then((res) => setChannels(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => console.error("Error fetching channels:", err));
   }, []);
 
-  const createChannel = () => {
-    API.post("/channels", { name: channelName })
-      .then((res) => {
-        setChannels([...channels, res.data]);
-        setChannelName("");
-      })
-      .catch((err) => console.error(err));
+  const createChannel = async () => {
+    if (!channelName.trim()) return;
+
+    try {
+      const res = await API.post("/channels", { name: channelName });
+      setChannels([...channels, res.data]); // Add new channel to list
+      setChannelName(""); // Clear input
+    } catch (err) {
+      console.error("Error creating channel:", err);
+    }
   };
 
-  const deleteChannel = (id) => {
-    API.delete(`/channels/${id}`)
-      .then(() => setChannels(channels.filter((ch) => ch._id !== id)))
-      .catch((err) => console.error(err));
+  const deleteChannel = async (id) => {
+    try {
+      await API.delete(`/channels/${id}`);
+      setChannels(channels.filter((ch) => ch._id !== id)); // Remove from list
+    } catch (err) {
+      console.error("Error deleting channel:", err);
+    }
   };
 
   return (

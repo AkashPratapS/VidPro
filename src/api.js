@@ -1,11 +1,23 @@
-const API_BASE_URL = "http://localhost:5000";
+import axios from "axios";
 
-export const signUpUser = async (email, password) => {
-  const response = await fetch(`${API_BASE_URL}/signup`, {
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+const API = axios.create({
+  baseURL: `${API_BASE_URL}/api`,
+  withCredentials: true, // If needed for cookies
+});
+
+// Authentication APIs
+export const signUpUser = async (username, email, password) => {
+  const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ username, email, password }),
   });
+
+  if (!response.ok) {
+    throw new Error("Failed to sign up");
+  }
 
   return response.json();
 };
@@ -19,7 +31,7 @@ export const loginUser = async (credentials) => {
 
   const data = await response.json();
   if (response.ok) {
-    localStorage.setItem("token", data.token); // Store JWT in localStorage
+    localStorage.setItem("token", data.token); // Store JWT
   }
   return data;
 };
@@ -39,5 +51,5 @@ export const logoutUser = () => {
   localStorage.removeItem("token");
 };
 
-// ✅ Add this to allow default import
-export default { signUpUser, loginUser, getProfile, logoutUser };
+// ✅ Add default Axios instance export
+export default API;

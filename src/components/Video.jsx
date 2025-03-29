@@ -5,7 +5,7 @@ import { BsFillCheckCircleFill } from "react-icons/bs";
 import { abbreviateNumber } from "js-abbreviation-number";
 
 function Video({ video }) {
-  console.log(video);
+  console.log("Rendering Video Component with:", video);
 
   return (
     <div className="">
