@@ -8,21 +8,23 @@ const API = axios.create({
 });
 
 // ✅ Automatically attach token to requests
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-}, (error) => Promise.reject(error));
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-// Authentication APIs
+// ✅ Authentication APIs
 export const signUpUser = async (username, email, password) => {
   try {
-    const { data } = await API.post("/auth/signup", { username, email, password });
+    const { data } = await API.post("/auth/register", { username, email, password });
     return data;
   } catch (error) {
-    console.error("Signup Error:", error.response?.data || error.message);
     throw new Error(error.response?.data?.message || "Failed to sign up");
   }
 };
@@ -33,21 +35,34 @@ export const loginUser = async (credentials) => {
     localStorage.setItem("token", data.token); // Store JWT
     return data;
   } catch (error) {
-    console.error("Login Error:", error.response?.data || error.message);
     throw new Error(error.response?.data?.message || "Failed to log in");
   }
 };
 
-// ✅ Fixed profile fetching with axios and correct endpoint
-export const getProfile = async () => {
+export async function getProfile() {
   try {
-    const { data } = await API.get("/auth/profile");
-    return data;
+    const token = localStorage.getItem('authToken'); // Retrieve token from storage
+    const response = await fetch('/api/profile', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`, // Include token in headers
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Unauthorized: Please log in again.');
+      }
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    return await response.json();
   } catch (error) {
-    console.error("Profile Fetch Error:", error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || "Failed to fetch profile");
+    console.error('Profile Fetch Error:', error);
+    throw error;
   }
-};
+}
 
 export const logoutUser = () => {
   localStorage.removeItem("token");

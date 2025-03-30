@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { getProfile, logoutUser } from "../api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ProfileButton = () => {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchUser() {
@@ -20,6 +21,7 @@ const ProfileButton = () => {
   const handleLogout = () => {
     logoutUser();
     setUser(null);
+    navigate("/login"); // Redirect to login after logout
   };
 
   return (
@@ -27,7 +29,7 @@ const ProfileButton = () => {
       {user ? (
         <div className="flex items-center space-x-3">
           <Link to="/profile" className="text-gray-800 font-medium">
-            Welcome, {user.email}
+            Welcome, {user.username}
           </Link>
           <button
             onClick={handleLogout}

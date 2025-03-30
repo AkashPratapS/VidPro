@@ -11,28 +11,15 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-  
+
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-  
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Login failed");
-      }
-  
-      const data = await res.json();
-      localStorage.setItem("token", data.token); // Store token
-      alert("Login successful");
+      const data = await loginUser({ email, password });
+      alert("✅ Login successful!");
       navigate("/");
     } catch (error) {
       setError(error.message);
     }
   };
-  
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
