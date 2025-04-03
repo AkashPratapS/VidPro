@@ -1,16 +1,11 @@
 const express = require("express");
-const { registerUser, loginUser, getProfile } = require("../controllers/authController");
-const { authenticate } = require("../middleware/authMiddleware");
+const { registerUser, loginUser, getProfile, logoutUser } = require("../controllers/authController");
 
 const router = express.Router();
 
-// ✅ Register Route
 router.post("/register", registerUser);
-
-// ✅ Login Route
 router.post("/login", loginUser);
-
-// ✅ Get Profile Route (Protected)
-router.get("/profile", authenticate, getProfile);
+router.get("/profile", getProfile);  // ✅ Ensure this is `/auth/profile`
+router.post("/logout", logoutUser);
 
 module.exports = router;

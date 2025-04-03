@@ -1,8 +1,5 @@
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-
-const JWT_SECRET = process.env.JWT_SECRET;
 
 // ✅ Register User
 exports.registerUser = async (req, res) => {
@@ -25,7 +22,7 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-// ✅ Login User
+// ✅ Login User (Using Sessions)
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -36,23 +33,37 @@ exports.loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ error: "❌ Invalid credentials" });
 
-    // Generate Token
-    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: "1h" });
+    // Store user info in session
+    req.session.user = { id: user._id, role: user.role };
 
-    res.json({ success: true, token });
+    res.json({ success: true, message: "✅ Logged in successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// ✅ Get User Profile
+// ✅ Get User Profile (Session-Based)
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    console.log("Session Data:", req.session); // ✅ Debugging: Check if session exists
+
+    if (!req.session.user) {
+      return res.status(401).json({ error: "Unauthorized: Please log in" });
+    }
+
+    const user = await User.findById(req.session.user.id).select("-password");
     if (!user) return res.status(404).json({ error: "User not found" });
 
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};
+
+
+// ✅ Logout User (Destroy Session)
+exports.logoutUser = (req, res) => {
+  req.session.destroy(() => {
+    res.json({ message: "✅ Logged out successfully" });
+  });
 };

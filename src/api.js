@@ -39,30 +39,17 @@ export const loginUser = async (credentials) => {
   }
 };
 
+// ✅ Fixed `getProfile` to use Axios properly
 export async function getProfile() {
   try {
-    const token = localStorage.getItem('authToken'); // Retrieve token from storage
-    const response = await fetch('/api/profile', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`, // Include token in headers
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Unauthorized: Please log in again.');
-      }
-      throw new Error(`Error: ${response.statusText}`);
-    }
-
-    return await response.json();
+    const { data } = await API.get("/profile"); // ✅ Use Axios
+    return data;
   } catch (error) {
-    console.error('Profile Fetch Error:', error);
-    throw error;
+    console.error("Profile Fetch Error:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || "Failed to fetch profile");
   }
 }
+
 
 export const logoutUser = () => {
   localStorage.removeItem("token");
