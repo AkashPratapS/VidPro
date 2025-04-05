@@ -1,69 +1,41 @@
-const bcrypt = require("bcryptjs");
-const User = require("../models/User");
+import bcrypt from "bcryptjs";
+import User from "../models/User.js";
 
-// ✅ Register User
-exports.registerUser = async (req, res) => {
+export const register = async (req, res) => {
+  const { username, email, password } = req.body;
   try {
-    const { username, email, password } = req.body;
+    const existing = await User.findOne({ email });
+    if (existing) return res.status(400).json({ message: "Email already exists" });
 
-    // Check if email exists
-    let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ error: "Email already registered" });
+    const hashed = await bcrypt.hash(password, 10);
+    const user = await User.create({ username, email, password: hashed });
 
-    // Hash Password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    user = new User({ username, email, password: hashedPassword });
-
-    await user.save();
-
-    res.status(201).json({ message: "✅ User registered successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    req.session.user = { id: user._id, username: user.username };
+    res.json({ message: "Registered successfully", user: req.session.user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-// ✅ Login User (Using Sessions)
-exports.loginUser = async (req, res) => {
+export const login = async (req, res) => {
+  const { email, password } = req.body;
   try {
-    const { email, password } = req.body;
     const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
-    if (!user) return res.status(400).json({ error: "❌ User not found" });
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(400).json({ message: "Invalid credentials" });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ error: "❌ Invalid credentials" });
-
-    // Store user info in session
-    req.session.user = { id: user._id, role: user.role };
-
-    res.json({ success: true, message: "✅ Logged in successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    req.session.user = { id: user._id, username: user.username };
+    res.json({ message: "Logged in", user: req.session.user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-// ✅ Get User Profile (Session-Based)
-exports.getProfile = async (req, res) => {
-  try {
-    console.log("Session Data:", req.session); // ✅ Debugging: Check if session exists
-
-    if (!req.session.user) {
-      return res.status(401).json({ error: "Unauthorized: Please log in" });
-    }
-
-    const user = await User.findById(req.session.user.id).select("-password");
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-
-// ✅ Logout User (Destroy Session)
-exports.logoutUser = (req, res) => {
+export const logout = (req, res) => {
   req.session.destroy(() => {
-    res.json({ message: "✅ Logged out successfully" });
+    res.clearCookie("connect.sid");
+    res.json({ message: "Logged out" });
   });
 };

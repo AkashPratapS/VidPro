@@ -21,23 +21,24 @@ function App() {
       {loading && <Loading />}
       <Navbar />
       <Routes>
-        {/* Redirect users based on auth status */}
-        <Route path="/" element={user ? <Navigate to="/home" replace /> : <Navigate to="/signup" replace />} />
-        <Route path="/signup" element={user ? <Navigate to="/home" replace /> : <SignUp />} />
-        <Route path="/login" element={user ? <Navigate to="/home" replace /> : <Login />} />
+  {/* Default route logic */}
+  <Route path="/" element={user ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} />
+  <Route path="/signup" element={user ? <Navigate to="/home" replace /> : <SignUp />} />
+  <Route path="/login" element={user ? <Navigate to="/home" replace /> : <Login />} />
 
-        {/* Protected Routes */}
-        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/channels" element={<ProtectedRoute><ChannelManagement /></ProtectedRoute>} />
-        <Route path="/upload" element={<ProtectedRoute><VideoUpload /></ProtectedRoute>} />
+  {/* Protected Routes */}
+  <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+  <Route path="/channels" element={<ProtectedRoute><ChannelManagement /></ProtectedRoute>} />
+  <Route path="/upload" element={<ProtectedRoute><VideoUpload /></ProtectedRoute>} />
 
-        {/* Public Routes */}
-        <Route path="/search/:searchQuery" element={<Search />} />
-        <Route path="/video/:id" element={<PlayingVideo />} />
+  {/* Public Routes */}
+  <Route path="/search/:searchQuery" element={<Search />} />
+  <Route path="/video/:id" element={<PlayingVideo />} />
 
-        {/* Catch-all Route: Redirect unknown routes to home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+  {/* Catch-all Route */}
+  <Route path="*" element={<Navigate to="/" replace />} />
+</Routes>
+
     </div>
   );
 }
