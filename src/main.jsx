@@ -1,19 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App";
-/*import { AuthProvider } from "./context/AuthProvider";*/
+import { AuthProvider } from "./context/AuthProvider"; // ✅ Named Import
 import { UtilsContextProvider } from "./context/UtilsContext";
-import AuthProvider from "./context/AuthProvider";
+import App from "./App";
 
-
+// ✅ Ensure only ONE Router is used at the top level
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <BrowserRouter> {/* ✅ Only one Router at the top */}
-      <AuthProvider>
+  <React.StrictMode>
+    <AuthProvider>
+      <BrowserRouter>
         <UtilsContextProvider>
           <App />
         </UtilsContextProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  
+      </BrowserRouter>
+    </AuthProvider>
+  </React.StrictMode>
 );

@@ -1,23 +1,33 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar.jsx";
 import Video from "./Video.jsx";
-import { useAuth } from "../context/AuthProvider.jsx";
+import { useData } from "../context/DataProvider";
+
 import ListItems from "./ListItems.jsx";
-import API from "../api"; // Assuming you have API helper for fetching
+import API from "../api"; // Ensure API helper is correctly configured
 
 function Home() {
-  const { data: videos = [], loading } = useAuth();
+  const { loading: authLoading } = useData();
+  const [videos, setVideos] = useState([]);
   const [channels, setChannels] = useState([]);
-  
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Fetch videos
   useEffect(() => {
-    console.log("Fetched data:", videos);
-    if (videos.length > 0) {
-      console.log("Sample video object:", JSON.stringify(videos[0], null, 2));
-    }
-  }, [videos]);
+    API.get("/videos")
+      .then((res) => {
+        setVideos(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching videos:", err);
+        setError("Failed to load videos. Please try again.");
+        setLoading(false);
+      });
+  }, []);
 
-  // Fetch all channels when component mounts
+  // Fetch channels
   useEffect(() => {
     API.get("/channels")
       .then((res) => setChannels(res.data))
@@ -31,18 +41,23 @@ function Home() {
         <ListItems />
 
         {/* ✅ Loading State */}
-        {loading && (
+        {(loading || authLoading) && (
           <div className="flex justify-center items-center h-full">
             <h3 className="text-gray-500 text-lg">Loading videos...</h3>
           </div>
         )}
 
+        {/* ✅ Error State */}
+        {error && (
+          <div className="text-center text-red-500 mt-10">
+            <h3>{error}</h3>
+          </div>
+        )}
+
         {/* ✅ Grouping Videos by Channels */}
-        {!loading && videos?.length > 0 ? (
+        {!loading && !authLoading && videos.length > 0 ? (
           channels.map((channel) => {
-            const channelVideos = videos.filter(
-              (vid) => vid.channelId === channel._id
-            );
+            const channelVideos = videos.filter((vid) => vid.channelId === channel._id);
 
             return channelVideos.length > 0 ? (
               <div key={channel._id} className="mb-6">
@@ -56,7 +71,8 @@ function Home() {
             ) : null;
           })
         ) : (
-          !loading && (
+          !loading &&
+          !authLoading && (
             <div className="text-center text-gray-500 mt-10">
               <h3>No videos available</h3>
             </div>

@@ -1,30 +1,35 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { fetchData } from "../utils/rapidapi";
+import { getProfile } from "../api"; // ✅ Ensure this API call works
 
-export const AuthContext = createContext();
+// ✅ Create AuthContext with default value to avoid undefined errors
+export const AuthContext = createContext(null);
 
-export default function AuthProvider({ children }) {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [value, setValue] = useState("New");
+export function AuthProvider({ children }) {
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetchAlldata(value);
-  }, [value]);
+    async function fetchUser() {
+      try {
+        const profile = await getProfile();
+        setUser(profile);
+      } catch (error) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUser();
+  }, []);
 
-  const fetchAlldata = (query) => {
-    setLoading(true);
-    fetchData(`search/?q=${query}`).then(({ contents }) => {
-      console.log(contents);
-      setData(contents);
-      setLoading(false);
-    });
-  };
   return (
-    <AuthContext.Provider value={{ loading, data, value, setValue }}>
+    <AuthContext.Provider value={{ loading, user, setUser }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+// ✅ Custom hook for authentication
+export function useAuth() {
+  return useContext(AuthContext);
+}
